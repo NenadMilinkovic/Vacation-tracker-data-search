@@ -28,6 +28,7 @@ class EmployeeService(
         val email = (SecurityContextHolder.getContext().authentication.principal as Employee).email
 
         return vacationRepository.findByEmployeeEmailAndVacationYear(year, email)
+            ?: throw Exception("Employee don't have vacation in $year year")
     }
 
     fun getUsedVacationDaysPerPeriod(startDate: String, endDate: String): List<UsedVacation> {
@@ -39,7 +40,7 @@ class EmployeeService(
             email,
             dataFormat.parse(startDate),
             dataFormat.parse(endDate)
-            )
+        )
     }
 
     fun addUsedVacationDays(usedVacation: UsedVacation) {
@@ -50,18 +51,20 @@ class EmployeeService(
         val year = calendar.get(Calendar.YEAR)
 
         val vacation = vacationRepository.findByEmployeeEmailAndVacationYear(year, email)
+            ?: throw Exception("Employee don't have vacation in $year year")
 
         usedVacation.vacation = vacation
 
         if (vacation.freeDays - usedVacation.spendDays < 0) {
-            logger.error("Employee xxx don't have enough free days")
-        } else {
-            usedVacationRepository.save(usedVacation)
-            vacation.usedDays += usedVacation.spendDays
-            vacation.freeDays -= usedVacation.spendDays
-            vacationRepository.save(vacation)
+            logger.error("Employee $email don't have enough free days")
+            throw Exception("Employee $email don't have enough free days")
         }
 
-        logger.info("Success insert used vacation days for xxx")
+        usedVacationRepository.save(usedVacation)
+        vacation.usedDays += usedVacation.spendDays
+        vacation.freeDays -= usedVacation.spendDays
+        vacationRepository.save(vacation)
+
+        logger.info("Success insert used vacation days for $email")
     }
 }

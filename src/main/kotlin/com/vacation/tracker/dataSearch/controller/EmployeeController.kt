@@ -2,6 +2,7 @@ package com.vacation.tracker.dataSearch.controller
 
 import com.vacation.tracker.dataSearch.dto.UsedVacationDto
 import com.vacation.tracker.dataSearch.dto.VacationInfo
+import com.vacation.tracker.dataSearch.dto.VacationPeriodRequest
 import com.vacation.tracker.dataSearch.dto.mapper.UsedVacationMapper
 import com.vacation.tracker.dataSearch.dto.mapper.VacationMapper
 import com.vacation.tracker.dataSearch.model.Employee
@@ -29,14 +30,13 @@ class EmployeeController(
         return ResponseEntity(vacationMapper.convertToDto(employeeService.getVacationInfo(year)), HttpStatus.OK)
     }
 
-    @GetMapping("/usedVacation/{startDate}/to/{endDate}")
+    @GetMapping("/usedVacationForPeriod")
     fun getUsedVacationPeriod(
-        @PathVariable startDate: String,
-        @PathVariable endDate: String
+        @RequestBody datePeriod: VacationPeriodRequest
     ): ResponseEntity<List<UsedVacationDto>> {
 
         return ResponseEntity(
-            employeeService.getUsedVacationDaysPerPeriod(startDate, endDate).map {
+            employeeService.getUsedVacationDaysPerPeriod(datePeriod.startDate, datePeriod.endDate).map {
                 usedVacationMapper.convertToDto(it)
             },
             HttpStatus.OK

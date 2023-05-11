@@ -19,5 +19,5 @@ interface VacationRepository: JpaRepository<Vacation, UUID> {
     fun findByEmployeeEmailAndVacationYear(
         @Param("year") year: Int,
         @Param("email") email: String
-    ): Vacation
+    ): Vacation?
 }

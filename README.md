@@ -4,11 +4,15 @@
 
 Clone also Vacation-tracker-data-import service(https://github.com/NenadMilinkovic/Vacation-tracker-data-import)
 
-Run services with command from Vacation-tracker-data-import root folder:
+Run services in next way:
 
-    docker compose up
+* In root folder of import service find docker-compose.yml 
+and change build path for search service to root folder of search service
+* Run services with command from Vacation-tracker-data-import root folder:
 
-## lofin
+  `docker compose up`
+
+## login
 
 * **URL:**
 
@@ -57,7 +61,7 @@ Every request must have Authorization header and value token from login endpoint
 
 * **Method**
 
-  `GET`
+  `POST`
 
 * **Body Params:**
 

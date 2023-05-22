@@ -36,6 +36,10 @@ class EmployeeService(
         val email = (SecurityContextHolder.getContext().authentication.principal as Employee).email
         val dataFormat = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.ENGLISH)
 
+        if (dataFormat.parse(startDate) > dataFormat.parse(endDate)) {
+            throw Exception("Start date of vacation must be before end date")
+        }
+
         return usedVacationRepository.getUsedVacationPeriod(
             email,
             dataFormat.parse(startDate),
@@ -44,6 +48,10 @@ class EmployeeService(
     }
 
     fun addUsedVacationDays(usedVacation: UsedVacation) {
+
+        if (usedVacation.startDate > usedVacation.endDate) {
+            throw Exception("Start date of vacation must be before end date")
+        }
 
         val email = (SecurityContextHolder.getContext().authentication.principal as Employee).email
         val calendar = Calendar.getInstance()
